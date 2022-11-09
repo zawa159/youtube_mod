@@ -2,13 +2,10 @@
 const menu_newline = () => {
   //menuを２段に変更
   const metadata = document.getElementById('top-row')
-  console.log(metadata.style.display);
-  metadata.style.display = 'inline';
-  console.log(metadata.style.display);
-}
-
-const delayExec = () => {
-  setTimeout(menu_newline(), 150000);
+  if (metadata.style.display != 'inline') {
+    metadata.style.display = 'inline';
+    console.log(metadata.style.display); 
+  }
 }
 
 /*
