@@ -13,13 +13,13 @@ const menu_newline = () => {
 /******
  *  クリップボタン非表示 
  *****/
- const hidden_clip = () => {
-    //クリップボタン非表示
-    const metadata = document.querySelector('[aria-label="クリップ"]')
-    if(metadata !== null){
-      metadata.remove();
-    }
-    console.log('remove clip_button')
+const hidden_clip = () => {
+  //クリップボタン非表示
+  const metadata = document.querySelector('[aria-label="クリップ"]')
+  if (metadata !== null) {
+    metadata.remove();
+  }
+  console.log('remove clip_button')
 }
 
 
@@ -30,11 +30,11 @@ const menu_newline = () => {
 
 //コールバック関数
 const callback = (mutations) => {
-    //第一引数 mutations は変化の内容を表す MutationRecord オブジェクトの配列  （複数の関数を呼べる）
-    mutations.forEach((mutation) => {
-      menu_newline();  //グッドボタン等のメニューを1段下へ変更
-      hidden_clip();   //クリップボタン非表示
-    })
+  //第一引数 mutations は変化の内容を表す MutationRecord オブジェクトの配列  （複数の関数を呼べる）
+  mutations.forEach((mutation) => {
+    menu_newline();  //グッドボタン等のメニューを1段下へ変更
+    hidden_clip();   //クリップボタン非表示
+  })
 }
 
 //コンストラクターにコールバック関数を渡してオブザーバーを生成
@@ -45,10 +45,10 @@ const target = document.body;
 
 //監視のオプション
 const config = {
-    childList: true, //対象ノードの子ノードに対する追加・削除の監視を有効に
-    attributes: false, //対象ノードの属性に対する変更の監視を有効に
-    characterData: false, //対象ノードのテキストデータの変更の監視を有効に
-    subtree: false, //対象ノードとその子孫ノードに対する変更の監視を有効に
+  childList: true, //対象ノードの子ノードに対する追加・削除の監視を有効に
+  attributes: false, //対象ノードの属性に対する変更の監視を有効に
+  characterData: false, //対象ノードのテキストデータの変更の監視を有効に
+  subtree: false, //対象ノードとその子孫ノードに対する変更の監視を有効に
 };
 
 //observe() メソッドに監視対象と監視オプションを指定して実行（監視を開始）
