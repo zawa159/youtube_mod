@@ -28,7 +28,21 @@ const hidden_clip = () => {
   }
 }
 
-
+/******
+ *  Thanksボタン非表示 
+ *****/
+const hidden_Thanks = () => {
+  //Thanksボタン非表示
+  const metadata = document.querySelector('[aria-label="Thanks"]');
+  if (metadata !== null) {
+    if (metadata.hasAttribute('hidden') === false) {
+      if (metadata.hidden == false) {
+        metadata.setAttribute('hidden', 'hidden');
+        console.log('youtube_mod Thanks_button add_hidden');
+      }
+    }
+  }
+}
 
 /*****
  * 監視をすることで動的に動作する
@@ -40,6 +54,7 @@ const callback = (mutations) => {
   mutations.forEach((mutation) => {
     menu_newline();  //グッドボタン等のメニューを1段下へ変更
     hidden_clip();   //クリップボタン非表示
+    hidden_Thanks(); //Thanksボタン非表示
   })
 }
 
