@@ -17,7 +17,7 @@ const hidden_clip = () => {
   //クリップボタン非表示
   const metadata = document.querySelector('[aria-label="クリップ"]')
   if (metadata !== null) {
-    metadata.remove();
+    metadata.setAttribute('hidden', 'hidden');
   }
   console.log('remove clip_button')
 }
