@@ -6,8 +6,10 @@
 const menu_newline = () => {
   //menuを２段に変更
   const metadata = document.getElementById('top-row');
-  metadata.style.display = 'inline';
-  console.log('menu_newline  Loading complete');
+  if (metadata.style.display !== 'inline') {
+    metadata.style.display = 'inline';
+    console.log('youtube_mod menu_newline Loading complete');
+  }
 }
 
 /******
@@ -15,11 +17,15 @@ const menu_newline = () => {
  *****/
 const hidden_clip = () => {
   //クリップボタン非表示
-  const metadata = document.querySelector('[aria-label="クリップ"]')
+  const metadata = document.querySelector('[aria-label="クリップ"]');
   if (metadata !== null) {
-    metadata.setAttribute('hidden', 'hidden');
+    if (metadata.hasAttribute('hidden') === false) {
+      if (metadata.hidden == false) {
+        metadata.setAttribute('hidden', 'hidden');
+        console.log('youtube_mod clip_button add_hidden');
+      }
+    }
   }
-  console.log('remove clip_button')
 }
 
 
