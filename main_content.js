@@ -5,7 +5,8 @@
 //グッドボタン等のメニューを1段下へ変更
 const menu_newline = () => {
   //menuを２段に変更
-  const metadata = document.getElementById('top-row');
+  const metadata = null;
+  metadata = document.getElementById('top-row');
   if (metadata.style.display !== 'inline') {
     metadata.style.display = 'inline';
     console.log('youtube_mod menu_newline Loading complete');
@@ -17,7 +18,8 @@ const menu_newline = () => {
  *****/
 const hidden_clip = () => {
   //クリップボタン非表示
-  const metadata = document.querySelector('[aria-label="クリップ"]');
+  const metadata = null;
+  metadata = document.querySelector('[aria-label="クリップ"]');
   if (metadata !== null) {
     if (metadata.hasAttribute('hidden') === false) {
       if (metadata.hidden == false) {
@@ -33,7 +35,8 @@ const hidden_clip = () => {
  *****/
 const hidden_Thanks = () => {
   //Thanksボタン非表示
-  const metadata = document.querySelector('[aria-label="Thanks"]');
+  const metadata = null;
+  metadata = document.querySelector('[aria-label="Thanks"]');
   if (metadata !== null) {
     if (metadata.hasAttribute('hidden') === false) {
       if (metadata.hidden == false) {
