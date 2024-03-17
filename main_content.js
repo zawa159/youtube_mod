@@ -6,7 +6,7 @@
 const menu_newline = () => {
   //menuを２段に変更
   const metadata = document.getElementById('top-row');
-  if (metadata.style.display !== null) {
+  if (metadata !== null) {
     if (metadata.style.display !== 'inline') {
       metadata.style.display = 'inline';
       console.log('youtube_mod menu_newline Loading complete');
