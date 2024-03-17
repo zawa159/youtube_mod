@@ -46,6 +46,36 @@ const hidden_Thanks = () => {
   }
 };
 
+
+/*****
+ * 更新する関数の配列
+ *****/
+
+const functionArray = [
+  menu_newline,  //グッドボタン等のメニューを1段下へ変更
+  hidden_Thanks, //Thanksボタン非表示
+  hidden_clip,   //クリップボタン非表示
+];
+
+
+
+
+/*****
+ * ページ更新時の動作
+ *****/
+// URLの変更を監視する関数
+function handleUrlChange() {
+  functionArray.forEach(func => func());
+}
+
+// ページが読み込まれたときと、URLが変更されたときに実行される関数を設定
+window.onload = function () {
+  handleUrlChange(); // 初期URLの取得
+  window.addEventListener('popstate', handleUrlChange); // ブラウザの戻る・進むボタンなどでURLが変更されたときのイベント
+  window.addEventListener('hashchange', handleUrlChange); // URLのハッシュが変更されたときのイベント
+};
+
+
 /*****
  * 監視をすることで動的に動作する
  *****/
@@ -53,11 +83,7 @@ const hidden_Thanks = () => {
 //コールバック関数
 const callback = (mutations) => {
   //第一引数 mutations は変化の内容を表す MutationRecord オブジェクトの配列  （複数の関数を呼べる）
-  mutations.forEach((mutation) => {
-    menu_newline();  //グッドボタン等のメニューを1段下へ変更
-    hidden_clip();   //クリップボタン非表示
-    hidden_Thanks(); //Thanksボタン非表示
-  })
+  functionArray.forEach(func => func());
 };
 
 //コンストラクターにコールバック関数を渡してオブザーバーを生成
