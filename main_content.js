@@ -8,7 +8,7 @@ const menu_newline = () => {
   const metadata = document.getElementById('top-row');
   if (metadata !== null) {
     if (metadata.style.display !== 'inline') {
-      metadata.style.display = 'inline';
+      metadata.style.display = 'inline-block';
       console.log('youtube_mod menu_newline Loading complete');
     }
   }
