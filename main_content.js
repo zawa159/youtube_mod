@@ -21,12 +21,8 @@ const hidden_clip = () => {
   //クリップボタン非表示
   const metadata = document.querySelector('[aria-label="クリップ"]');
   if (metadata !== null) {
-    if (metadata.hasAttribute('hidden') === false) {
-      if (metadata.hidden == false) {
-        metadata.setAttribute('hidden', 'hidden');
-        console.log('youtube_mod clip_button add_hidden');
-      }
-    }
+    metadata.remove();
+    console.log('youtube_mod clip_button add_hidden');
   }
 };
 
@@ -37,12 +33,8 @@ const hidden_Thanks = () => {
   //Thanksボタン非表示
   const metadata = document.querySelector('[aria-label="Thanks"]');
   if (metadata !== null) {
-    if (metadata.hasAttribute('hidden') === false) {
-      if (metadata.hidden == false) {
-        metadata.setAttribute('hidden', 'hidden');
-        console.log('youtube_mod Thanks_button add_hidden');
-      }
-    }
+    metadata.remove();
+    console.log('youtube_mod Thanks_button add_hidden');
   }
 };
 
