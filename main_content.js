@@ -20,10 +20,19 @@ const menu_newline = () => {
 const hidden_clip = () => {
   //クリップボタン非表示
   const metadata = document.querySelector('[aria-label="クリップ"]');
+  console.log(metadata);
+  if (metadata.hasAttribute('hidden') === false) {
+    if (metadata.hidden == false) {
+      metadata.setAttribute('hidden', 'hidden');
+      console.log('youtube_mod clip_button add_hidden');
+    }
+  }
+  /*
   if (metadata !== null) {
-    metadata.remove();
+    //metadata.remove();
     console.log('youtube_mod clip_button add_hidden');
   }
+  */
 };
 
 /******
@@ -38,6 +47,130 @@ const hidden_Thanks = () => {
   }
 };
 
+/******
+ *  保存ボタン追加 
+ *****/
+const add_save = () => {
+  // チャンネル登録ボタンの下にあるメニュー要素を取得
+  const menu = document.querySelector('#menu > ytd-menu-renderer');
+  if (!menu) {
+    console.log('メニュー要素が見つかりませんでした');
+    return;
+  }
+
+  // 保存ボタンがすでに存在するかどうかを確認
+  const existingSaveButton = menu.querySelector('[aria-label="再生リストに保存"]');
+  if (existingSaveButton) {
+    console.log('保存ボタンはすでに存在します');
+    return;
+  }
+
+  // 保存ボタンを作成
+  const saveButton = document.createElement('button');
+  saveButton.className = 'yt-spec-button-shape-next yt-spec-button-shape-next--tonal yt-spec-button-shape-next--mono yt-spec-button-shape-next--size-m yt-spec-button-shape-next--icon-leading';
+  saveButton.setAttribute('aria-label', '再生リストに保存');
+  saveButton.setAttribute('title', '保存');
+  const elements = `
+  <button class="yt-spec-button-shape-next yt-spec-button-shape-next--tonal yt-spec-button-shape-next--mono yt-spec-button-shape-next--size-m yt-spec-button-shape-next--icon-leading" aria-label="再生リストに保存" title="保存" style="">
+    <div class="yt-spec-button-shape-next__icon" aria-hidden="true">
+      <yt-icon style="width: 24px; height: 24px;">
+        <!--css-build:shady-->
+        <!--css-build:shady-->
+        <yt-icon-shape class="style-scope yt-icon">
+          <icon-shape class="yt-spec-icon-shape">
+            <div style="width: 100%; height: 100%; display: block; fill: currentcolor;">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: inherit; width: 100%; height: 100%;">
+                <path d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z"></path>
+              </svg>
+            </div>
+          </icon-shape>
+        </yt-icon-shape>
+      </yt-icon>
+    </div>
+    <div class="yt-spec-button-shape-next__button-text-content">保存</div>
+    <yt-touch-feedback-shape style="border-radius: inherit;">
+      <div class="yt-spec-touch-feedback-shape yt-spec-touch-feedback-shape--touch-response" aria-hidden="true">
+        <div class="yt-spec-touch-feedback-shape__stroke" style=""></div>
+        <div class="yt-spec-touch-feedback-shape__fill" style=""></div>
+      </div>
+    </yt-touch-feedback-shape>
+  </button>
+  `;
+
+  // 保存ボタンをメニューに追加
+  menu.appendChild(saveButton);
+
+  console.log('保存ボタンを追加しました');
+};
+
+/******
+ *  保存ボタン追加 
+ *****/
+/*
+const add_save = () => {
+  //クリップボタン非表示
+  //メニューバー取得
+  //const metadata = document.querySelector('[aria-label="再生リストに保存"]');
+  const metadata = document.querySelector('#menu > ytd-menu-renderer');
+  const add_button = document.querySelector('[aria-label="再生リストに保存"]');
+  const elements = `
+  <button class="yt-spec-button-shape-next yt-spec-button-shape-next--tonal yt-spec-button-shape-next--mono yt-spec-button-shape-next--size-m yt-spec-button-shape-next--icon-leading" aria-label="再生リストに保存" title="保存" style="">
+    <div class="yt-spec-button-shape-next__icon" aria-hidden="true">
+      <yt-icon style="width: 24px; height: 24px;">
+        <!--css-build:shady-->
+        <!--css-build:shady-->
+        <yt-icon-shape class="style-scope yt-icon">
+          <icon-shape class="yt-spec-icon-shape">
+            <div style="width: 100%; height: 100%; display: block; fill: currentcolor;">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: inherit; width: 100%; height: 100%;">
+                <path d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z"></path>
+              </svg>
+            </div>
+          </icon-shape>
+        </yt-icon-shape>
+      </yt-icon>
+    </div>
+    <div class="yt-spec-button-shape-next__button-text-content">保存</div>
+    <yt-touch-feedback-shape style="border-radius: inherit;">
+      <div class="yt-spec-touch-feedback-shape yt-spec-touch-feedback-shape--touch-response" aria-hidden="true">
+        <div class="yt-spec-touch-feedback-shape__stroke" style=""></div>
+        <div class="yt-spec-touch-feedback-shape__fill" style=""></div>
+      </div>
+    </yt-touch-feedback-shape>
+  </button>
+  `;
+  const add_element = new DOMParser().parseFromString(elements, "text/html");
+  console.log(add_element);
+  console.log(metadata);
+  console.log(add_button);
+  if (metadata !== null) {
+    if (add_button !== null) {
+      if (add_button !== null) {
+        metadata.appendChild(add_element);
+        console.log('youtube_mod add_save add_element');
+      }
+    }
+  }
+};
+
+/******
+ *  チャット欄動画下に移動
+ *****/
+
+/* メモ
+1.position  fixed  ⇒  static  で下部に移動
+  css ytd-watch-flexy[fixed-panels] #chat.ytd-watch-flexy
+
+2.chat-container 内に secondary を移動
+
+3.id columns  class="style-scope ytd-watch-flexy" に  「style="padding-right: 0px;"」を追加
+  移動先親要素.appendChild(移動する要素);
+
+4.full-bleed-container内のid="panels-full-bleed-container"を削除
+　※２つあり、空が対象
+*/
+
+
 
 /*****
  * 更新する関数の配列
@@ -47,6 +180,7 @@ const functionArray = [
   menu_newline,  //グッドボタン等のメニューを1段下へ変更
   hidden_Thanks, //Thanksボタン非表示
   hidden_clip,   //クリップボタン非表示
+  add_save       //保存ボタン追加
 ];
 
 
