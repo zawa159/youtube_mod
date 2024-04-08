@@ -113,7 +113,7 @@ const move_Chat = () => {
 }
 
 /*****
- * 更新する関数の配列
+ * YouTubeの動画ページである場合にのみ更新する関数の配列
  *****/
 
 const functionArray = [
@@ -123,6 +123,16 @@ const functionArray = [
   move_Chat      //チャット欄を画面下に移動させる
 ];
 
+// YouTubeの動画ページであるかどうかを判定する関数
+const isYouTubeVideoPage = () => {
+  // 現在のURLを取得
+  const currentUrl = window.location.href;
+  // YouTubeの動画ページのURLパターン
+  const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
+  // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
+  console.log("isYouTubeVideoPage");
+  return youtubeVideoPattern.test(currentUrl);
+};
 
 
 
@@ -131,7 +141,11 @@ const functionArray = [
  *****/
 // URLの変更を監視する関数
 function handleUrlChange() {
-  functionArray.forEach(func => func());
+  //YouTubeの動画ページである場合にのみ
+  if (isYouTubeVideoPage()) {
+    console.log("isYouTubeVideoPage111");
+    functionArray.forEach(func => func());
+  }
 }
 
 // ページが読み込まれたときと、URLが変更されたときに実行される関数を設定
@@ -166,5 +180,9 @@ const config = {
   subtree: false, //対象ノードとその子孫ノードに対する変更の監視を有効に
 };
 
-//observe() メソッドに監視対象と監視オプションを指定して実行（監視を開始）
-observer.observe(target, config);
+// YouTubeの動画ページである場合にのみMutationObserverを開始する
+if (isYouTubeVideoPage()) {
+  //observe() メソッドに監視対象と監視オプションを指定して実行（監視を開始）
+  console.log("isYouTubeVideoPage1112222");
+  observer.observe(target, config);
+}
