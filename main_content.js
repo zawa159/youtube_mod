@@ -143,7 +143,6 @@ const isYouTubeVideoPage = () => {
 function handleUrlChange() {
   //YouTubeの動画ページである場合にのみ
   if (isYouTubeVideoPage()) {
-    console.log("isYouTubeVideoPage111");
     functionArray.forEach(func => func());
   }
 }
@@ -183,6 +182,6 @@ const config = {
 // YouTubeの動画ページである場合にのみMutationObserverを開始する
 if (isYouTubeVideoPage()) {
   //observe() メソッドに監視対象と監視オプションを指定して実行（監視を開始）
-  console.log("isYouTubeVideoPage1112222");
+  console.log("youtube_mod MutationObserver Start");
   observer.observe(target, config);
 }
