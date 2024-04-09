@@ -130,7 +130,7 @@ const isYouTubeVideoPage = () => {
   // YouTubeの動画ページのURLパターン
   const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
   // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
-  console.log("isYouTubeVideoPage");
+  //console.log("isYouTubeVideoPage");
   return youtubeVideoPattern.test(currentUrl);
 };
 
@@ -162,8 +162,11 @@ window.onload = function () {
 //コールバック関数
 const callback = (mutations) => {
   //第一引数 mutations は変化の内容を表す MutationRecord オブジェクトの配列  （複数の関数を呼べる）
-  functionArray.forEach(func => func());
-};
+  if (isYouTubeVideoPage()) {
+    console.log("youtube_mod MutationObserver Start");
+      functionArray.forEach(func => func());
+  };
+}
 
 //コンストラクターにコールバック関数を渡してオブザーバーを生成
 const observer = new MutationObserver(callback);
@@ -174,14 +177,10 @@ const target = document.body;
 //監視のオプション
 const config = {
   childList: true, //対象ノードの子ノードに対する追加・削除の監視を有効に
-  attributes: false, //対象ノードの属性に対する変更の監視を有効に
-  characterData: false, //対象ノードのテキストデータの変更の監視を有効に
+  attributes: true, //対象ノードの属性に対する変更の監視を有効に
+  characterData: true, //対象ノードのテキストデータの変更の監視を有効に
   subtree: false, //対象ノードとその子孫ノードに対する変更の監視を有効に
 };
 
-// YouTubeの動画ページである場合にのみMutationObserverを開始する
-if (isYouTubeVideoPage()) {
-  //observe() メソッドに監視対象と監視オプションを指定して実行（監視を開始）
-  console.log("youtube_mod MutationObserver Start");
-  observer.observe(target, config);
-}
+//observe() メソッドに監視対象と監視オプションを指定して実行（監視を開始）
+observer.observe(target, config);
