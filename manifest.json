@@ -8,7 +8,7 @@
     "matches": ["*://*.youtube.com/*"],
     "run_at": "document_end",
     "all_frames": true,
-    "js": ["main_content.js"]
+    "js": ["youtube_mod_main.js"]
   }],
   "action": {
     "default_title":"Youtube_mod",
