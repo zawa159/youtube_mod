@@ -9,7 +9,7 @@ const menu_newline = () => {
   if (metadata !== null) {
     if (metadata.style.display !== 'inline-block') {
       metadata.style.display = 'inline-block';
-      console.log('youtube_mod menu_newline Loading complete');
+      //console.log('youtube_mod menu_newline Loading complete');
     }
   }
 };
@@ -22,7 +22,7 @@ const hidden_clip = () => {
   const metadata = document.querySelector('[aria-label="クリップ"]');
   if (metadata !== null) {
     metadata.remove();
-    console.log('youtube_mod clip_button add_hidden');
+    //console.log('youtube_mod clip_button add_hidden');
   }
 };
 
@@ -34,7 +34,7 @@ const hidden_Thanks = () => {
   const metadata = document.querySelector('[aria-label="Thanks"]');
   if (metadata !== null) {
     metadata.remove();
-    console.log('youtube_mod Thanks_button add_hidden');
+    //console.log('youtube_mod Thanks_button add_hidden');
   }
 };
 
