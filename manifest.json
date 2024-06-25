@@ -3,7 +3,16 @@
   "name": "Youtube_mod",
   "author": "zawa159",
   "version": "1.0.1",
-  "description": "Youtubeの拡張機能",
+  "description": "YouTubeの拡張機能",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [{
     "matches": ["*://*.youtube.com/*"],
     "run_at": "document_end",
@@ -11,8 +20,7 @@
     "js": ["youtube_mod_main.js"]
   }],
   "action": {
-    "default_title":"Youtube_mod",
-    "default_popup":"popup.html"
+    "default_title": "Youtube_mod",
+    "default_popup": "popup.html"
   }
-  
 }
