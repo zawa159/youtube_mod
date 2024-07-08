@@ -37,8 +37,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
                             args: [newUrl]
                         });
                     } else if (info.menuItemId === "playWithoutListNewTab") {
-                        // 新しいタブで開く
-                        chrome.tabs.create({ url: newUrl });
+                        // 現在タブのindex(位置)を取得する
+                        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                            // 現在タブ+1の場所を取得
+                            const currentIndex = tabs[0].index + 1;
+                            // 新しいタブで開く
+                            chrome.tabs.create({
+                                url: newUrl,
+                                active: false,
+                                index: currentIndex,
+                            });
+                        });
                     }
                 }
             }
