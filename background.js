@@ -44,7 +44,8 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
                             // 新しいタブで開く
                             chrome.tabs.create({
                                 url: newUrl,
-                                active: false,
+                                // active: false, // 新しいタブで開く（フォーカスされない）
+                                active: true,    // 新しいタブで開く（フォーカスされる）
                                 index: currentIndex,
                             });
                         });
