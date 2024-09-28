@@ -9,7 +9,7 @@ const menu_newline = () => {
   if (metadata !== null) {
     if (metadata.style.display !== 'inline-block') {
       metadata.style.display = 'inline-block';
-      console.log('youtube_mod menu_newline Loading complete');
+      //console.log('youtube_mod menu_newline Loading complete');
     }
   }
 };
@@ -22,7 +22,7 @@ const hidden_clip = () => {
   const metadata = document.querySelector('[aria-label="クリップ"]');
   if (metadata !== null) {
     metadata.remove();
-    console.log('youtube_mod clip_button add_hidden');
+    //console.log('youtube_mod clip_button add_hidden');
   }
 };
 
@@ -34,7 +34,7 @@ const hidden_Thanks = () => {
   const metadata = document.querySelector('[aria-label="Thanks"]');
   if (metadata !== null) {
     metadata.remove();
-    console.log('youtube_mod Thanks_button add_hidden');
+    //console.log('youtube_mod Thanks_button add_hidden');
   }
 };
 
@@ -112,15 +112,60 @@ const move_Chat = () => {
   }
 }
 
+/******
+ *  リストを使わず新しいタブで再生（中央ボタン）
+ *****/
+const play_Without_List_NewTab = () => {
+  document.addEventListener('auxclick', function (event) {
+    // 中央ボタン（ボタン値1）かを確認
+    if (event.button === 1) {
+
+      // クリックした要素からリンクを取得
+      const target = event.target.closest('a');
+
+      // 取得要素がリンクか判定
+      if (target && target.href) {
+
+        // URLを取得
+        const url = target.href;
+
+        // URLが動画か確認するパターン作成
+        const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
+
+        // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
+        const isvideo = youtubeVideoPattern.test(url);
+
+        // 正規表現結果が動画ページだった場合
+        if (isvideo === true) {
+
+          // マウス中央ボタンのデフォルトの動作を停止させる
+          event.preventDefault();
+
+          // メッセージをbackgroundスクリプトに送信
+          chrome.runtime.sendMessage({ action: 'play_Without_List_NewTab_msg', url: url });
+        }
+      }
+    }
+  });
+}
+
 /*****
  * YouTubeの動画ページである場合にのみ更新する関数の配列
  *****/
 
-const functionArray = [
+const functionVideoArray = [
   menu_newline,  //グッドボタン等のメニューを1段下へ変更
   hidden_Thanks, //Thanksボタン非表示
   hidden_clip,   //クリップボタン非表示
   move_Chat      //チャット欄を画面下に移動させる
+];
+
+/*****
+ * YouTubeのページである場合にのみ更新する関数の配列
+ *****/
+
+const functionArray = [
+  play_Without_List_NewTab,  //リストを使わず新しいタブで再生（中央ボタン）
 ];
 
 // YouTubeの動画ページであるかどうかを判定する関数
@@ -130,7 +175,7 @@ const isYouTubeVideoPage = () => {
   // YouTubeの動画ページのURLパターン
   const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
   // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
-  console.log("isYouTubeVideoPage");
+  //console.log("isYouTubeVideoPage");
   return youtubeVideoPattern.test(currentUrl);
 };
 
@@ -141,8 +186,11 @@ const isYouTubeVideoPage = () => {
  *****/
 // URLの変更を監視する関数
 function handleUrlChange() {
-  //YouTubeの動画ページである場合にのみ
   if (isYouTubeVideoPage()) {
+    // YouTubeの動画ページである場合にのみ
+    functionVideoArray.forEach(func => func());
+  } else {
+    // YouTubeのページである場合にのみ
     functionArray.forEach(func => func());
   }
 }
@@ -164,7 +212,7 @@ const callback = (mutations) => {
   //第一引数 mutations は変化の内容を表す MutationRecord オブジェクトの配列  （複数の関数を呼べる）
   if (isYouTubeVideoPage()) {
     console.log("youtube_mod MutationObserver Start");
-      functionArray.forEach(func => func());
+    functionVideoArray.forEach(func => func());
   };
 }
 
