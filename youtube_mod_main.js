@@ -115,8 +115,21 @@ const move_Chat = () => {
 /******
  *  リストを使わず新しいタブで再生（中央ボタン）
  *****/
+// スロットリングのためのタイムアウト
+let throttleTimeout = null;
+const throttleDelay = 0.2; // ミリ秒単位での遅延時間
+
 const play_Without_List_NewTab = () => {
   document.addEventListener('auxclick', function (event) {
+
+    // スロットリング処理(複数回呼び出されるため)
+    if (throttleTimeout) return;  // 一定時間内に再度イベントが発生したら無視
+
+    // タイムアウト時間設定
+    throttleTimeout = setTimeout(() => {
+      throttleTimeout = null;  // タイムアウト後に再び処理を許可
+    }, throttleDelay);
+
     // 中央ボタン（ボタン値1）かを確認
     if (event.button === 1) {
 
@@ -154,10 +167,11 @@ const play_Without_List_NewTab = () => {
  *****/
 
 const functionVideoArray = [
-  menu_newline,  //グッドボタン等のメニューを1段下へ変更
-  hidden_Thanks, //Thanksボタン非表示
-  hidden_clip,   //クリップボタン非表示
-  move_Chat      //チャット欄を画面下に移動させる
+  menu_newline,             //グッドボタン等のメニューを1段下へ変更
+  hidden_Thanks,            //Thanksボタン非表示
+  hidden_clip,              //クリップボタン非表示
+  move_Chat,                //チャット欄を画面下に移動させる
+  play_Without_List_NewTab, //リストを使わず新しいタブで再生（中央ボタン）
 ];
 
 /*****

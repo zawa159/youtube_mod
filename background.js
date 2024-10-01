@@ -72,6 +72,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // メッセージ内容がplay_Without_List_NewTabか判定
     if (request.action === 'play_Without_List_NewTab_msg') {
 
+        console.log("request" + request);
         // URLオブジェクト作成
         const url = new URL(request.url);
 
