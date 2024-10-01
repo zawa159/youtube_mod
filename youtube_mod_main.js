@@ -115,8 +115,7 @@ const move_Chat = () => {
 /******
  *  リストを使わず新しいタブで再生（中央ボタン）
  *****/
-// スロットリングのためのタイムアウト
-let throttleTimeout = null;
+let throttleTimeout = null; // スロットリングのためのタイムアウト
 const throttleDelay = 0.2; // ミリ秒単位での遅延時間
 
 const play_Without_List_NewTab = () => {
@@ -163,15 +162,42 @@ const play_Without_List_NewTab = () => {
 }
 
 /*****
+ *  概要欄を自動展開
+ *****/
+let isOpenSummaryFlg = false;  // 概要欄が展開済みかどうかの判定フラグ
+
+// 概要欄を自動で展開
+const open_summary = () => {
+  // console.log(isOpenSummaryFlg);
+  // 一度実行済みかどうかの判定
+  // if (isOpenSummaryFlg === false) {
+
+  // 概要欄を取得
+  const summary = document.querySelector('#expand'); // IDを使用
+
+  if (summary) {
+
+    // 概要欄を展開
+    summary.click();
+  }
+  // isOpenSummaryFlg = true; // 概要欄が展開済みのためtrueを設定
+  // }
+};
+
+
+
+
+/*****
  * YouTubeの動画ページである場合にのみ更新する関数の配列
  *****/
 
 const functionVideoArray = [
+  open_summary,             //概要欄を自動で展開
   menu_newline,             //グッドボタン等のメニューを1段下へ変更
   hidden_Thanks,            //Thanksボタン非表示
   hidden_clip,              //クリップボタン非表示
-  move_Chat,                //チャット欄を画面下に移動させる
   play_Without_List_NewTab, //リストを使わず新しいタブで再生（中央ボタン）
+  move_Chat,                //チャット欄を画面下に移動させる
 ];
 
 /*****
