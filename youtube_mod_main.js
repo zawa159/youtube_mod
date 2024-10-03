@@ -155,6 +155,13 @@ const play_Without_List_NewTab = () => {
 
           // メッセージをbackgroundスクリプトに送信
           chrome.runtime.sendMessage({ action: 'play_Without_List_NewTab_msg', url: url });
+
+          // メッセージをbackgroundスクリプトに送信
+          try {
+            const response = chrome.runtime.sendMessage({ action: 'play_Without_List_NewTab_msg', url: url });
+          } catch (error) {
+            console.error('play_Without_List_NewTab sendMessage Error :', error.message);
+          }
         }
       }
     }
