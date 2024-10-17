@@ -112,91 +112,115 @@ const move_Chat = () => {
   }
 }
 
-/*****
- * 汎用スロットリング関数
+/******
+ *  リストを使わず新しいタブで再生（中央ボタン）
  *****/
-const throttle = (callback, delay) => {
-  let throttleTimeout = null;
+let throttleTimeout = null; // スロットリングのためのタイムアウト
+const throttleDelay = 0.2; // ミリ秒単位での遅延時間
 
-  return (...args) => {
-    if (throttleTimeout) return; // 一定時間内に再度イベントが発生したら無視
+const play_Without_List_NewTab = () => {
+  document.addEventListener('auxclick', function (event) {
 
+    // スロットリング処理(複数回呼び出されるため)
+    if (throttleTimeout) return;  // 一定時間内に再度イベントが発生したら無視
+
+    // タイムアウト時間設定
     throttleTimeout = setTimeout(() => {
-      throttleTimeout = null; // タイムアウト後に再び処理を許可
-    }, delay);
+      throttleTimeout = null;  // タイムアウト後に再び処理を許可
+    }, throttleDelay);
 
-    callback(...args); // コールバック関数を実行
-  };
-};
+    // 中央ボタン（ボタン値1）かを確認
+    if (event.button === 1) {
 
-/*****
- * リストを使わず新しいタブで再生（中央ボタン）
- *****/
-const handleClick = (event) => {
-  // 中央ボタン（ボタン値1）かを確認
-  if (event.button === 1) {
+      // クリックした要素からリンクを取得
+      const target = event.target.closest('a');
 
-    // クリックした要素からリンクを取得
-    const target = event.target.closest('a');
+      // 取得要素がリンクか判定
+      if (target && target.href) {
 
-    // 取得要素がリンクか判定
-    if (target && target.href) {
+        // URLを取得
+        const url = target.href;
 
-      // URLを取得
-      const url = target.href;
+        // URLが動画か確認するパターン作成
+        const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
 
-      // URLが動画か確認するパターン作成
-      const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
+        // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
+        const isvideo = youtubeVideoPattern.test(url);
 
-      // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
-      const isvideo = youtubeVideoPattern.test(url);
+        // 正規表現結果が動画ページだった場合
+        if (isvideo === true) {
 
-      // 正規表現結果が動画ページだった場合
-      if (isvideo === true) {
+          // マウス中央ボタンのデフォルトの動作を停止させる
+          event.preventDefault();
 
-        // マウス中央ボタンのデフォルトの動作を停止させる
-        event.preventDefault();
-
-        // メッセージをbackgroundスクリプトに送信
-        try {
-          chrome.runtime.sendMessage({ action: 'play_Without_List_NewTab_msg', url: url });
-        } catch (error) {
-          console.warn('play_Without_List_NewTab sendMessage Error :', error.message);
+          // メッセージをbackgroundスクリプトに送信
+          try {
+            chrome.runtime.sendMessage({ action: 'play_Without_List_NewTab_msg', url: url });
+          } catch (error) {
+            console.warn('play_Without_List_NewTab sendMessage Error :', error.message);
+          }
         }
       }
     }
+  });
+}
+
+/*****
+ * URLが変更されたかチェック
+ *****/
+
+let previousUrl = window.location.href; // 初期状態の現在のURLを取得
+let isOpenSummaryFlg = false; // グローバルスコープで宣言
+
+const isUrlChangedCheck = () => {
+  // URLが変更されているかの変数の初期化
+  let isUrlChanged = false;
+
+  // 現在のURLを取得
+  const currentUrl = window.location.href;
+
+  // console.log("currentUrl Before ", currentUrl);
+  // console.log("previousUrl Before ", previousUrl);
+  // URLが変更されているか確認
+  if (currentUrl !== previousUrl) {
+
+    console.log("※※※※  URL変更を検知  ※※※※");
+    isUrlChanged = true;
+
   }
-};
-const play_Without_List_NewTab = () => {
+  // 現在のURLを取得
+  previousUrl = window.location.href;
+  // console.log("currentUrl After ", currentUrl);
+  // console.log("previousUrl After ", previousUrl);
 
-  // スロットリングを適用してイベントリスナーを設定
-  document.addEventListener('auxclick', throttle(handleClick, 200));
-};
-
+  return isUrlChanged;
+}
 
 /*****
  *  概要欄を自動展開
  *****/
-var isOpenSummaryFlg = false;
+
 // 概要欄を自動で展開
 const open_summary = () => {
 
   // 遅延時間を設定（ここでは1000ミリ秒＝1秒）
   const delay = 1000;
 
-  // 一度実行済みかどうかの判定
-  if (isOpenSummaryFlg === false) {
-
-    // setTimeoutで指定の時間遅延させて処理を実行
-    setTimeout(() => {
+  // setTimeoutで指定の時間遅延させて処理を実行
+  setTimeout(() => {
+    if (isUrlChangedCheck()) {
+      isOpenSummaryFlg = false;  // フラグにfalseを設定
+      console.log("isOpenSummaryFlg にfalseを設定")
+    }
+    // 一度実行済みかどうかの判定
+    if (isOpenSummaryFlg === false) {
       summary_click();  // 概要欄を自動展開
       isOpenSummaryFlg = true;  // フラグをtrueに設定
       console.log("open_summary実行●");
-    }, delay);  // 遅延時間後に処理を実行
-
-  } else {
-    console.log("open_summary実行済み×");
-  }
+    } else {
+      console.log("open_summary実行済み×");
+    }
+  }, delay);  // 遅延時間後に処理を実行
 
   function summary_click() {
 
@@ -226,37 +250,6 @@ const open_summary = () => {
 };
 
 /************************************************************************************************************************************/
-
-/*****
- * URLが変更されたかチェック
- *****/
-// 初期状態の現在のURLを取得
-previousUrl = window.location.href;
-// console.log("firest URL get");
-
-const isUrlChangedCheck = () => {
-  // URLが変更されているかの変数の初期化
-  let isUrlChanged = false;
-
-  // 現在のURLを取得
-  const currentUrl = window.location.href;
-
-  // console.log("currentUrl Before ", currentUrl);
-  // console.log("previousUrl Before ", previousUrl);
-  // URLが変更されているか確認
-  if (currentUrl !== previousUrl) {
-
-    console.log("※※※※  URL変更を検知  ※※※※");
-    isUrlChanged = true;
-
-  }
-  // 現在のURLを取得
-  previousUrl = window.location.href;
-  // console.log("currentUrl After ", currentUrl);
-  // console.log("previousUrl After ", previousUrl);
-
-  return isUrlChanged;
-}
 
 /*****
  * YouTubeの動画ページである場合にのみ更新する関数の配列
@@ -312,7 +305,7 @@ const executeFunctions = () => {
  *****/
 const initializePage = () => {
   console.log("initializePage が実行されました");
-  isUrlChangedCheck(); // URLが変更された場合のチェック
+  isOpenSummaryFlg = false;
   executeFunctions();  // 関数を実行
 };
 
@@ -341,7 +334,7 @@ const setupEventListeners = () => {
   // ページ遷移時（ページを離れる際に何か処理を行いたい場合）
   window.addEventListener('beforeunload', (event) => {
     console.log("beforeunload イベントが発生しました");
-    // 必要に応じて遷移前に処理を追加
+    isOpenSummaryFlg = false; // フラグをリセット
   });
 };
 
@@ -373,6 +366,7 @@ const setupMutationObserver = () => {
  * 初期化処理
  *****/
 const initialize = () => {
+  console.log("initialize 発生しました");
   setupEventListeners(); // 各種イベントリスナーの設定
   setupMutationObserver(); // 動的変更の監視
 };
