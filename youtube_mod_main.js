@@ -170,35 +170,42 @@ const play_Without_List_NewTab = () => {
  *****/
 
 let previousUrl = window.location.href; // 初期状態の現在のURLを取得
-let isOpenSummaryFlg = false; // グローバルスコープで宣言
+let isUrlChangedFlg = false; // URL変更管理フラグ
 
-const isUrlChangedCheck = () => {
-  // URLが変更されているかの変数の初期化
-  let isUrlChanged = false;
-
+const isVideoPageUrlChangedCheck = () => {
   // 現在のURLを取得
   const currentUrl = window.location.href;
 
-  // console.log("currentUrl Before ", currentUrl);
-  // console.log("previousUrl Before ", previousUrl);
-  // URLが変更されているか確認
-  if (currentUrl !== previousUrl) {
+  // URLが変更されているかの変数の初期化
+  let isUrlChanged = false;
 
-    console.log("※※※※  URL変更を検知  ※※※※");
-    isUrlChanged = true;
+  // YouTubeの動画ページであるかどうかを判定
+  if (isYouTubeVideoPage()) {
+    // console.log("〒  currentUrl Before ", currentUrl);
+    // console.log("〒  previousUrl Before ", previousUrl);
+    // URLが変更されているか確認
+    if (currentUrl !== previousUrl) {
 
+      console.log("※※※※  URL変更を検知  ※※※※");
+      isUrlChanged = true;
+
+    }
   }
   // 現在のURLを取得
   previousUrl = window.location.href;
-  // console.log("currentUrl After ", currentUrl);
-  // console.log("previousUrl After ", previousUrl);
+  // console.log("〒  currentUrl After ", currentUrl);
+  // console.log("〒  previousUrl After ", previousUrl);
+  isUrlChangedFlg = isUrlChanged;
 
   return isUrlChanged;
+
 }
 
 /*****
  *  概要欄を自動展開
  *****/
+
+let isOpenSummaryFlg = false; // グローバルスコープで宣言
 
 // 概要欄を自動で展開
 const open_summary = () => {
@@ -208,17 +215,18 @@ const open_summary = () => {
 
   // setTimeoutで指定の時間遅延させて処理を実行
   setTimeout(() => {
-    if (isUrlChangedCheck()) {
+
+    if (isVideoPageUrlChangedCheck()) {
       isOpenSummaryFlg = false;  // フラグにfalseを設定
-      console.log("isOpenSummaryFlg にfalseを設定")
+      // console.log("◆ isOpenSummaryFlg にfalseを設定")
     }
     // 一度実行済みかどうかの判定
     if (isOpenSummaryFlg === false) {
       summary_click();  // 概要欄を自動展開
       isOpenSummaryFlg = true;  // フラグをtrueに設定
-      console.log("open_summary実行●");
+      // console.log("◆  open_summary実行●");
     } else {
-      console.log("open_summary実行済み×");
+      // console.log("◆  open_summary実行済み×");
     }
   }, delay);  // 遅延時間後に処理を実行
 
@@ -235,15 +243,66 @@ const open_summary = () => {
       if (summaryIsOpen.hasAttribute('hidden')) {
         // 概要欄を展開
         summary.click();
-        hasUrlChanged = true; // 概要欄が展開済みのためtrueを設定
 
       } else {
-
-        console.log('hidden属性が設定されています');
+        console.log('summary_click hidde属性が設定されていません。');
       }
-
     } else {
-      console.log('動作しませんでした。');
+      console.log('summary_click 動作しませんでした。');
+
+    }
+  };
+};
+
+/*****
+ *  チャットのリプレイを表示欄を自動展開
+ *****/
+
+let isOpenChatReplaysFlg = false; // グローバルスコープで宣言
+
+// チャットのリプレイを表示欄を自動で展開
+const open_chat_replays = () => {
+
+  // 遅延時間を設定（ここでは1000ミリ秒＝1秒）
+  const delay = 1000;
+
+  // setTimeoutで指定の時間遅延させて処理を実行
+  setTimeout(() => {
+
+    if (isUrlChangedFlg) {
+      isOpenChatReplaysFlg = false;  // フラグにfalseを設定
+      // console.log("★  open_chat_replays にfalseを設定")
+    }
+    // 一度実行済みかどうかの判定
+    if (isOpenChatReplaysFlg === false) {
+      chat_replays_click();  // チャットのリプレイを表示欄を自動展開
+      isOpenChatReplaysFlg = true;  // フラグをtrueに設定
+      // console.log("★  open_chat_replays実行●");
+    } else {
+      // console.log("★  open_chat_replays実行済み×");
+    }
+  }, delay);  // 遅延時間後に処理を実行
+
+  function chat_replays_click() {
+
+    // チャットのリプレイを表示ボタンを取得
+    let chatReplays = document.querySelector('#show-hide-button'); // チャットのリプレイを表示ボタンを取得
+
+    // チャットのリプレイを表示ボタンを取得出来ているか
+    if (chatReplays) {
+      let chatReplays_button = chatReplays.querySelector('.yt-spec-button-shape-next.yt-spec-button-shape-next--outline.yt-spec-button-shape-next--mono.yt-spec-button-shape-next--size-m.yt-spec-button-shape-next--enable-backdrop-filter-experiment');
+      if (chatReplays_button) {
+        // チャットのリプレイを表示ボタンの展開状態を確認
+        if (!chatReplays.hasAttribute('hidden')) {
+          // チャットのリプレイを表示ボタンを展開
+          chatReplays_button.click();
+          // console.log('chat_replays_click 展開状態です。');
+        } else {
+          // console.log('chat_replays_click 未展開状態です。');
+        }
+      }
+    } else {
+      console.log('chat_replays_click 動作しませんでした。');
 
     }
   };
@@ -256,12 +315,13 @@ const open_summary = () => {
  *****/
 
 const functionVideoArray = [
-  open_summary,             //概要欄を自動で展開
-  menu_newline,             //グッドボタン等のメニューを1段下へ変更
-  hidden_Thanks,            //Thanksボタン非表示
-  hidden_clip,              //クリップボタン非表示
-  play_Without_List_NewTab, //リストを使わず新しいタブで再生（中央ボタン）
-  //move_Chat,                //チャット欄を画面下に移動させる
+  open_summary,             // 概要欄を自動で展開
+  open_chat_replays,        // チャットのリプレイを表示欄を自動展開
+  menu_newline,             // グッドボタン等のメニューを1段下へ変更
+  hidden_Thanks,            // Thanksボタン非表示
+  hidden_clip,              // クリップボタン非表示
+  play_Without_List_NewTab, // リストを使わず新しいタブで再生（中央ボタン）
+  //move_Chat,              // チャット欄を画面下に移動させる
 ];
 
 /*****
@@ -289,9 +349,14 @@ const isYouTubeVideoPage = () => {
  *****/
 const executeFunctions = () => {
 
+  isOpenSummaryFlg = false;
+  isOpenChatReplaysFlg = false;
+  console.log("executeFunctions が実行されました");
+  console.log("isOpenSummaryFlg : " + isOpenSummaryFlg);
+  console.log("isOpenChatReplaysFlg : " + isOpenChatReplaysFlg);
+
   // YouTubeの動画ページの場合
   if (isYouTubeVideoPage()) {
-    isOpenSummaryFlg = false;
     functionVideoArray.forEach(func => func());
 
     // YouTubeの動画ページ以外の場合
@@ -306,6 +371,8 @@ const executeFunctions = () => {
 const initializePage = () => {
   console.log("initializePage が実行されました");
   isOpenSummaryFlg = false;
+  isOpenChatReplaysFlg = false;
+  isVideoPageUrlChangedCheck();
   executeFunctions();  // 関数を実行
 };
 
@@ -334,7 +401,6 @@ const setupEventListeners = () => {
   // ページ遷移時（ページを離れる際に何か処理を行いたい場合）
   window.addEventListener('beforeunload', (event) => {
     console.log("beforeunload イベントが発生しました");
-    isOpenSummaryFlg = false; // フラグをリセット
   });
 };
 
@@ -367,8 +433,8 @@ const setupMutationObserver = () => {
  *****/
 const initialize = () => {
   console.log("initialize 発生しました");
-  setupEventListeners(); // 各種イベントリスナーの設定
-  setupMutationObserver(); // 動的変更の監視
+  setupEventListeners();    // 各種イベントリスナーの設定
+  setupMutationObserver();  // 動的変更の監視
 };
 
 initialize(); // 初期化を実行
