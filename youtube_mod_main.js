@@ -222,9 +222,12 @@ const open_summary = () => {
     }
     // 一度実行済みかどうかの判定
     if (isOpenSummaryFlg === false) {
-      summary_click();  // 概要欄を自動展開
-      isOpenSummaryFlg = true;  // フラグをtrueに設定
-      // console.log("◆  open_summary実行●");
+      // 概要欄を自動展開
+      if (summary_click()) {
+        // 実行完了したらフラグをtrueに設定
+        isOpenSummaryFlg = true;
+        // console.log("◆  open_summary実行●");
+      }
     } else {
       // console.log("◆  open_summary実行済み×");
     }
@@ -232,6 +235,7 @@ const open_summary = () => {
 
   function summary_click() {
 
+    let result = false; // 結果を格納
     // 概要欄を取得
     let summary = document.querySelector('#expand'); // 概要欄のIDを使用
     let summaryIsOpen = document.querySelector('#collapse'); // 「一部を表示」要素取得
@@ -243,7 +247,7 @@ const open_summary = () => {
       if (summaryIsOpen.hasAttribute('hidden')) {
         // 概要欄を展開
         summary.click();
-
+        result = true;
       } else {
         console.log('summary_click hidde属性が設定されていません。');
       }
@@ -251,6 +255,7 @@ const open_summary = () => {
       console.log('summary_click 動作しませんでした。');
 
     }
+    return result;
   };
 };
 
@@ -263,6 +268,8 @@ let isOpenChatReplaysFlg = false; // グローバルスコープで宣言
 // チャットのリプレイを表示欄を自動で展開
 const open_chat_replays = () => {
 
+  // 自動展開ループ回数
+  loopLimit = 15;
   // 遅延時間を設定（ここでは1000ミリ秒＝1秒）
   const delay = 1000;
 
@@ -275,17 +282,27 @@ const open_chat_replays = () => {
     }
     // 一度実行済みかどうかの判定
     if (isOpenChatReplaysFlg === false) {
-      chat_replays_click();  // チャットのリプレイを表示欄を自動展開
-      isOpenChatReplaysFlg = true;  // フラグをtrueに設定
+      for (loop = 0; loop <= loopLimit; loop++) {
+
+        // チャットのリプレイを表示欄を自動展開
+        if (chat_replays_click()) {
+          isOpenChatReplaysFlg = true;  // フラグをtrueに設定
+          break;
+        } else if (loop >= loopLimit) {
+          // チャットのリプレイを表示欄が無い動画ページとして判断
+          isOpenChatReplaysFlg = true;
+        }
+      }
       // console.log("★  open_chat_replays実行●");
     } else {
       // console.log("★  open_chat_replays実行済み×");
     }
   }, delay);  // 遅延時間後に処理を実行
 
+  // チャットのリプレイを表示欄を自動展開
   function chat_replays_click() {
 
-    // チャットのリプレイを表示ボタンを取得
+    let result = false; // 結果を格納
     let chatReplays = document.querySelector('#show-hide-button'); // チャットのリプレイを表示ボタンを取得
 
     // チャットのリプレイを表示ボタンを取得出来ているか
@@ -296,6 +313,7 @@ const open_chat_replays = () => {
         if (!chatReplays.hasAttribute('hidden')) {
           // チャットのリプレイを表示ボタンを展開
           chatReplays_button.click();
+          result = true;
           // console.log('chat_replays_click 展開状態です。');
         } else {
           // console.log('chat_replays_click 未展開状態です。');
@@ -303,8 +321,8 @@ const open_chat_replays = () => {
       }
     } else {
       console.log('chat_replays_click 動作しませんでした。');
-
     }
+    return result;
   };
 };
 
