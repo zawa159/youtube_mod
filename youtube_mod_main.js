@@ -269,7 +269,7 @@ let isOpenChatReplaysFlg = false; // グローバルスコープで宣言
 const open_chat_replays = () => {
 
   // 自動展開ループ回数
-  loopLimit = 15;
+  loopLimit = 25;
   // 遅延時間を設定（ここでは1000ミリ秒＝1秒）
   const delay = 1000;
 
@@ -413,6 +413,13 @@ const setupEventListeners = () => {
     window.addEventListener('hashchange', () => {
       console.log("hashchange イベントが発生しました");
       initializePage();
+    });
+
+    // タブがアクティブになった時に動作
+    window.addEventListener('focus', () => {
+      console.log("focus イベントが発生しました");
+      // フォーカス時に実行したい処理をここに書く
+      initializePage(); // 例: ページを再初期化する
     });
   };
 
