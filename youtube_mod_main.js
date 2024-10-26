@@ -330,7 +330,7 @@ const open_chat_replays = () => {
  *  プレイリスト画面に削除ボタン追加
  *****/
 
- const add_playList_remove_button = () => {
+const add_playList_remove_button = () => {
   console.log("★add_button が実行されました");
   const playlistItems = document.querySelectorAll("ytd-playlist-video-renderer");  // 動画リストを取得
 
@@ -367,11 +367,6 @@ const open_chat_replays = () => {
   }
 }
 
-// 初期化のためにadd_button関数を呼び出す
-add_button();
-
-
-
 /************************************************************************************************************************************/
 
 /*****
@@ -394,8 +389,8 @@ const functionVideoArray = [
  *****/
 
 const functionArray = [
-  play_Without_List_NewTab,  // リストを使わず新しいタブで再生（中央ボタン）
-  add_button                 // [後で見る]画面に削除ボタンを追加
+  play_Without_List_NewTab,      // リストを使わず新しいタブで再生（中央ボタン）
+  // add_playList_remove_button  // [後で見る]画面に削除ボタンを追加
 ];
 
 /*****
