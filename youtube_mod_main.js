@@ -326,6 +326,52 @@ const open_chat_replays = () => {
   };
 };
 
+/*****
+ *  プレイリスト画面に削除ボタン追加
+ *****/
+
+ const add_playList_remove_button = () => {
+  console.log("★add_button が実行されました");
+  const playlistItems = document.querySelectorAll("ytd-playlist-video-renderer");  // 動画リストを取得
+
+  if (playlistItems.length > 0) {
+    console.log("動画リスト取得OK");
+    console.log(playlistItems);
+
+    // 各動画アイテムごとにボタンを追加
+    playlistItems.forEach((item, index) => {
+      console.log(`Item ${index + 1}:`, item);
+
+      // 既にボタンが追加されていないか確認してから追加
+      if (!item.querySelector(".custom-button")) {
+        // 各アイテム用のボタンを作成
+        const button = document.createElement("button");
+        // button.textContent = `Button ${index + 1}`;
+        button.textContent = `[後で見る]から削除`;
+        button.classList.add("custom-button"); // ボタンを識別するためのクラス
+
+        // ボタンのスタイル設定
+        button.style.position = "relative"; // 各アイテム内に相対的に配置
+        button.style.marginTop = "10px";    // ボタンの位置を調整
+        button.style.zIndex = "1000";       // 他の要素に隠れないように
+
+        // ボタンのクリックイベントを設定
+        button.addEventListener("click", () => {
+          alert(`Item ${index + 1} のボタンがクリックされました！`);
+        });
+
+        // 各動画アイテム内の適切な位置にボタンを追加
+        item.appendChild(button);
+      }
+    });
+  }
+}
+
+// 初期化のためにadd_button関数を呼び出す
+add_button();
+
+
+
 /************************************************************************************************************************************/
 
 /*****
@@ -333,13 +379,14 @@ const open_chat_replays = () => {
  *****/
 
 const functionVideoArray = [
-  open_summary,             // 概要欄を自動で展開
-  open_chat_replays,        // チャットのリプレイを表示欄を自動展開
-  menu_newline,             // グッドボタン等のメニューを1段下へ変更
-  hidden_Thanks,            // Thanksボタン非表示
-  hidden_clip,              // クリップボタン非表示
-  play_Without_List_NewTab, // リストを使わず新しいタブで再生（中央ボタン）
-  //move_Chat,              // チャット欄を画面下に移動させる
+  open_summary,                  // 概要欄を自動で展開
+  open_chat_replays,             // チャットのリプレイを表示欄を自動展開
+  menu_newline,                  // グッドボタン等のメニューを1段下へ変更
+  hidden_Thanks,                 // Thanksボタン非表示
+  hidden_clip,                   // クリップボタン非表示
+  play_Without_List_NewTab,      // リストを使わず新しいタブで再生（中央ボタン）
+  // move_Chat,                  // チャット欄を画面下に移動させる
+  // add_playList_remove_button  // [後で見る]画面に削除ボタンを追加
 ];
 
 /*****
@@ -347,7 +394,8 @@ const functionVideoArray = [
  *****/
 
 const functionArray = [
-  play_Without_List_NewTab,  //リストを使わず新しいタブで再生（中央ボタン）
+  play_Without_List_NewTab,  // リストを使わず新しいタブで再生（中央ボタン）
+  add_button                 // [後で見る]画面に削除ボタンを追加
 ];
 
 /*****
