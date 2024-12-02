@@ -380,7 +380,7 @@ const functionVideoArray = [
   hidden_Thanks,                 // Thanksボタン非表示
   hidden_clip,                   // クリップボタン非表示
   play_Without_List_NewTab,      // リストを使わず新しいタブで再生（中央ボタン）
-  // move_Chat,                  // チャット欄を画面下に移動させる
+  move_Chat,                     // チャット欄を画面下に移動させる
   // add_playList_remove_button  // [後で見る]画面に削除ボタンを追加
 ];
 
