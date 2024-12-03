@@ -1,3 +1,7 @@
+// URLが動画か配信か確認するパターン作成
+const YOUTUBE_VIDEO_PATTERN = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
+const YOUTUBE_LIVE_PATTERN = /^https?:\/\/(www\.)?youtube\.com\/live\/?.*/i;
+
 /*****
  *  グッドボタン等のメニューを1段下へ変更
  *****/
@@ -141,11 +145,8 @@ const play_Without_List_NewTab = () => {
         // URLを取得
         const url = target.href;
 
-        // URLが動画か確認するパターン作成
-        const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
-
         // URLがYouTubeの動画ページのパターンに一致するかどうかを判定
-        const isvideo = youtubeVideoPattern.test(url);
+        const isvideo = YOUTUBE_VIDEO_PATTERN.test(url);
 
         // 正規表現結果が動画ページだった場合
         if (isvideo === true) {
@@ -179,10 +180,8 @@ const isVideoPageUrlChangedCheck = () => {
   // URLが変更されているかの変数の初期化
   let isUrlChanged = false;
 
-  // YouTubeの動画ページであるかどうかを判定
-  if (isYouTubeVideoPage()) {
-    // console.log("〒  currentUrl Before ", currentUrl);
-    // console.log("〒  previousUrl Before ", previousUrl);
+  // YouTubeの動画ページまたはライブページであるかどうかを判定
+  if (isYouTubeVideoPage() || isYouTubeLivePage()) {
     // URLが変更されているか確認
     if (currentUrl !== previousUrl) {
 
@@ -399,10 +398,18 @@ const functionArray = [
 const isYouTubeVideoPage = () => {
   // 現在のURLを取得
   const currentUrl = window.location.href;
-  // YouTubeの動画ページのURLパターン
-  const youtubeVideoPattern = /^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=.+/i;
   // URLがYouTubeの動画ページのパターンに一致するかどうかを返却
-  return youtubeVideoPattern.test(currentUrl);
+  return YOUTUBE_VIDEO_PATTERN.test(currentUrl);
+};
+
+/*****
+ * YouTubeのライブページであるかどうかを判定する関数
+ *****/
+ const isYouTubeLivePage = () => {
+  // 現在のURLを取得
+  const currentUrl = window.location.href;
+  // URLがYouTubeの動画ページのパターンに一致するかどうかを返却
+  return YOUTUBE_LIVE_PATTERN.test(currentUrl);
 };
 
 /*****
@@ -416,8 +423,8 @@ const executeFunctions = () => {
   console.log("isOpenSummaryFlg : " + isOpenSummaryFlg);
   console.log("isOpenChatReplaysFlg : " + isOpenChatReplaysFlg);
 
-  // YouTubeの動画ページの場合
-  if (isYouTubeVideoPage()) {
+  // YouTubeの動画ページまたはライブページの場合
+  if (isYouTubeVideoPage() || isYouTubeLivePage()) {
     functionVideoArray.forEach(func => func());
 
     // YouTubeの動画ページ以外の場合
@@ -486,7 +493,7 @@ const setupMutationObserver = () => {
   };
 
   const callback = (mutations) => {
-    if (isYouTubeVideoPage()) {
+    if (isYouTubeVideoPage() || isYouTubeLivePage()) {
       // console.log("MutationObserver: 動的変更を検出しました");
       functionVideoArray.forEach(func => func());
     }
