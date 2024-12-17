@@ -57,68 +57,68 @@ const move_Chat = () => {
         metadata_chat.style.position = 'static';
       }
     }
-  }
 
-  //チャット欄下に動画一覧を移動
-  //chat-container 内に secondary を移動
-  const metadata_cinematics = document.getElementById('cinematics');  //シアターモード判定用
-  const metadata_chatContainer = document.getElementById('chat-container');  //チャットコンテナ取得
-  //シアターモードか判定
-  if (metadata_cinematics !== null) {
-    if (metadata_chatContainer !== null) {
-      if (!metadata_chatContainer.querySelector('#secondary')) {
-        const metadata_secondary = document.getElementById('secondary');
-        // metadata_secondaryをmetadata_chat_container内に移動させる
-        metadata_chatContainer.appendChild(metadata_secondary);
-        console.log('youtube_mod move_Chat secondary in chat-container');
+    //チャット欄下に動画一覧を移動
+    //chat-container 内に secondary を移動
+    const metadata_cinematics = document.getElementById('cinematics');  //シアターモード判定用
+    const metadata_chatContainer = document.getElementById('chat-container');  //チャットコンテナ取得
+    //シアターモードか判定
+    if (metadata_cinematics !== null) {
+      if (metadata_chatContainer !== null) {
+        if (!metadata_chatContainer.querySelector('#secondary')) {
+          const metadata_secondary = document.getElementById('secondary');
+          // metadata_secondaryをmetadata_chat_container内に移動させる
+          metadata_chatContainer.appendChild(metadata_secondary);
+          console.log('youtube_mod move_Chat secondary in chat-container');
+        }
+      }
+    } else {
+      if (metadata_chatContainer !== null) {
+        const metadata_secondary_inner = document.getElementById('secondary-inner');
+        if (metadata_secondary_inner !== null) {
+          // metadata_secondaryをmetadata_chat_container内に移動させる
+          metadata_secondary_inner.appendChild(metadata_chatContainer);
+          console.log('youtube_mod move_Chat secondary out chat-container');
+        }
       }
     }
-  } else {
-    if (metadata_chatContainer !== null) {
-      const metadata_secondary_inner = document.getElementById('secondary-inner');
-      if (metadata_secondary_inner !== null) {
-        // metadata_secondaryをmetadata_chat_container内に移動させる
-        metadata_secondary_inner.appendChild(metadata_chatContainer);
-        console.log('youtube_mod move_Chat secondary out chat-container');
+
+    //チャット欄を縦に延ばす
+    if (metadata_chat !== null) {
+      if (metadata_chat.style.height !== null) {
+        if (metadata_chat.style.height !== '1024px') {
+          const add_element = style = "height: 1024px;";
+          metadata_chat.style = add_element;
+          //console.log('youtube_mod move_Chat height: 1024px;');
+        }
       }
     }
-  }
 
-  //チャット欄を縦に延ばす
-  if (metadata_chat !== null) {
-    if (metadata_chat.style.height !== null) {
-      if (metadata_chat.style.height !== '1024px') {
-        const add_element = style = "height: 1024px;";
-        metadata_chat.style = add_element;
-        //console.log('youtube_mod move_Chat height: 1024px;');
+    //下に移動させたチャット欄を右に詰める
+    //id columns  class="style-scope ytd-watch-flexy" に  「style="padding-right: 0px;"」を追加
+    const metadata_columns = document.getElementById('columns');
+    // スタイルを追加
+    if (metadata_columns !== null) {
+      if (metadata_columns.style.paddingRight === '') { // padding-rightの値が未設定の場合
+        metadata_columns.setAttribute('style', 'padding-right: 0px;');
+        //console.log('youtube_mod move_Chat padding-right: 0px;');
       }
     }
-  }
 
-  //下に移動させたチャット欄を右に詰める
-  //id columns  class="style-scope ytd-watch-flexy" に  「style="padding-right: 0px;"」を追加
-  const metadata_columns = document.getElementById('columns');
-  // スタイルを追加
-  if (metadata_columns !== null) {
-    if (metadata_columns.style.paddingRight === '') { // padding-rightの値が未設定の場合
-      metadata_columns.setAttribute('style', 'padding-right: 0px;');
-      //console.log('youtube_mod move_Chat padding-right: 0px;');
+    //チャット欄を移動させた跡のスペースを削除
+    //full-bleed-container内のid="panels-full-bleed-container"を削除
+    //const panel_full_bleed_container = document.querySelector('.full-bleed-container > #panels-full-bleed-container');
+    const panel_full_bleed_container = document.getElementById('panels-full-bleed-container');
+    if (panel_full_bleed_container !== null) {
+      panel_full_bleed_container.parentNode.removeChild(panel_full_bleed_container);
+      //console.log('youtube_mod move_Chat removeChild(panels-full-bleed-container)');
     }
-  }
-
-  //チャット欄を移動させた跡のスペースを削除
-  //full-bleed-container内のid="panels-full-bleed-container"を削除
-  //const panel_full_bleed_container = document.querySelector('.full-bleed-container > #panels-full-bleed-container');
-  const panel_full_bleed_container = document.getElementById('panels-full-bleed-container');
-  if (panel_full_bleed_container !== null) {
-    panel_full_bleed_container.parentNode.removeChild(panel_full_bleed_container);
-    //console.log('youtube_mod move_Chat removeChild(panels-full-bleed-container)');
   }
 }
 
 /******
- *  リストを使わず新しいタブで再生（中央ボタン）
- *****/
+*  リストを使わず新しいタブで再生（中央ボタン）
+*****/
 let throttleTimeout = null; // スロットリングのためのタイムアウト
 const throttleDelay = 0.2; // ミリ秒単位での遅延時間
 
@@ -366,6 +366,54 @@ const add_playList_remove_button = () => {
   }
 }
 
+/*****
+ *  操作メニュー自動クリック
+ *****/
+// マウスが特定の要素に当たった時にクリックする
+document.addEventListener("mouseover", (event) => {
+  console.log("mouseover動作");
+  // イベント発生箇所の要素を取得
+  const target = event.target;
+
+  // 該当のクラス名を持つ要素か確認
+  if (target.classList.contains("dropdown-trigger") && target.classList.contains("style-scope") && target.classList.contains("ytd-menu-renderer")) {
+    console.log("該当要素をクリックします:", target);
+
+    // 該当箇所をクリック
+    target.click();
+  }
+});
+
+/**
+ * 
+ * 
+ *  あとでコメント整理のみでコミット
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+// // 操作メニューを自動で展開
+// const open_dropdown = () => {
+
+//   // 操作メニューのCSSを取得
+//   // マウスが特定の要素に当たった時にクリックする
+//   document.addEventListener("mouseover", (event) => {
+//     // イベント発生箇所の要素を取得
+//     const target = event.target;
+
+//     // 該当のクラス名を持つ要素か確認
+//     if (target.classList.contains("dropdown-trigger") && target.classList.contains("style-scope") && target.classList.contains("ytd-menu-renderer")) {
+//       console.log("該当要素をクリックします:", target);
+
+//       // 該当箇所をクリック
+//       target.click();
+//     }
+//   });
+// };
+
 /************************************************************************************************************************************/
 
 /*****
@@ -381,6 +429,7 @@ const functionVideoArray = [
   play_Without_List_NewTab,      // リストを使わず新しいタブで再生（中央ボタン）
   move_Chat,                     // チャット欄を画面下に移動させる
   // add_playList_remove_button  // [後で見る]画面に削除ボタンを追加
+  // open_dropdown                  // 操作メニューを自動でクリック
 ];
 
 /*****
@@ -390,6 +439,7 @@ const functionVideoArray = [
 const functionArray = [
   play_Without_List_NewTab,      // リストを使わず新しいタブで再生（中央ボタン）
   // add_playList_remove_button  // [後で見る]画面に削除ボタンを追加
+  // open_dropdown                  // 操作メニューを自動でクリック
 ];
 
 /*****
@@ -405,7 +455,7 @@ const isYouTubeVideoPage = () => {
 /*****
  * YouTubeのライブページであるかどうかを判定する関数
  *****/
- const isYouTubeLivePage = () => {
+const isYouTubeLivePage = () => {
   // 現在のURLを取得
   const currentUrl = window.location.href;
   // URLがYouTubeの動画ページのパターンに一致するかどうかを返却
@@ -469,7 +519,7 @@ const setupEventListeners = () => {
     window.addEventListener('focus', () => {
       console.log("focus イベントが発生しました");
       // フォーカス時に実行したい処理をここに書く
-      initializePage(); // 例: ページを再初期化する
+      initializePage();
     });
   };
 
