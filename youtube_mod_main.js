@@ -47,13 +47,21 @@ const hidden_Thanks = () => {
  *  チャット欄を画面下に移動
  *****/
 const move_Chat = () => {
-  //シアターモードのchat欄を下に移動
-  //chat欄の[position]を[fixed]⇒[static]へ変更
+
+  // チャット欄を展開する
+  if (isOpenChatReplaysFlg === false) {
+    open_chat_replays();
+  }
+
+  // シアターモードのchat欄を下に移動
   const metadata_chat = document.getElementById('chat');
-  if (metadata_chat !== null) {
+
+  // チャット欄を取得 && チャット欄展開済みの場合
+  if (metadata_chat !== null && isOpenChatReplaysFlg === true) {
     const computedStyle_chat = window.getComputedStyle(metadata_chat);
     if (computedStyle_chat.position !== null) {
       if (computedStyle_chat.position === 'fixed') {
+        // chat欄の[position]を[fixed]⇒[static]へ変更
         metadata_chat.style.position = 'static';
       }
     }
@@ -103,15 +111,15 @@ const move_Chat = () => {
         metadata_columns.setAttribute('style', 'padding-right: 0px;');
         //console.log('youtube_mod move_Chat padding-right: 0px;');
       }
-    }
 
-    //チャット欄を移動させた跡のスペースを削除
-    //full-bleed-container内のid="panels-full-bleed-container"を削除
-    //const panel_full_bleed_container = document.querySelector('.full-bleed-container > #panels-full-bleed-container');
-    const panel_full_bleed_container = document.getElementById('panels-full-bleed-container');
-    if (panel_full_bleed_container !== null) {
-      panel_full_bleed_container.parentNode.removeChild(panel_full_bleed_container);
-      //console.log('youtube_mod move_Chat removeChild(panels-full-bleed-container)');
+      //チャット欄を移動させた跡のスペースを削除
+      //full-bleed-container内のid="panels-full-bleed-container"を削除
+      //const panel_full_bleed_container = document.querySelector('.full-bleed-container > #panels-full-bleed-container');
+      const panel_full_bleed_container = document.getElementById('panels-full-bleed-container');
+      if (panel_full_bleed_container !== null) {
+        panel_full_bleed_container.parentNode.removeChild(panel_full_bleed_container);
+        //console.log('youtube_mod move_Chat removeChild(panels-full-bleed-container)');
+      }
     }
   }
 }
@@ -181,13 +189,12 @@ const isVideoPageUrlChangedCheck = () => {
   let isUrlChanged = false;
 
   // YouTubeの動画ページまたはライブページであるかどうかを判定
-  if (isYouTubeVideoPage() || isYouTubeLivePage()) {
+  if (isYouTubeVideoPage(currentUrl) || isYouTubeLivePage(currentUrl)) {
     // URLが変更されているか確認
     if (currentUrl !== previousUrl) {
 
       console.log("※※※※  URL変更を検知  ※※※※");
       isUrlChanged = true;
-
     }
   }
   // 現在のURLを取得
@@ -215,9 +222,9 @@ const open_summary = () => {
   // setTimeoutで指定の時間遅延させて処理を実行
   setTimeout(() => {
 
-    if (isVideoPageUrlChangedCheck()) {
+    if (isUrlChangedFlg) {
       isOpenSummaryFlg = false;  // フラグにfalseを設定
-      // console.log("◆ isOpenSummaryFlg にfalseを設定")
+      console.log("◆ isOpenSummaryFlg にfalseを設定")
     }
     // 一度実行済みかどうかの判定
     if (isOpenSummaryFlg === false) {
@@ -248,7 +255,7 @@ const open_summary = () => {
         summary.click();
         result = true;
       } else {
-        console.log('summary_click hidde属性が設定されていません。');
+        // console.log('summary_click hidde属性が設定されていません。');
       }
     } else {
       console.log('summary_click 動作しませんでした。');
@@ -267,62 +274,53 @@ let isOpenChatReplaysFlg = false; // グローバルスコープで宣言
 // チャットのリプレイを表示欄を自動で展開
 const open_chat_replays = () => {
 
-  // 自動展開ループ回数
-  loopLimit = 25;
-  // 遅延時間を設定（ここでは1000ミリ秒＝1秒）
-  const delay = 1000;
-
-  // setTimeoutで指定の時間遅延させて処理を実行
-  setTimeout(() => {
-
-    if (isUrlChangedFlg) {
-      isOpenChatReplaysFlg = false;  // フラグにfalseを設定
-      // console.log("★  open_chat_replays にfalseを設定")
-    }
-    // 一度実行済みかどうかの判定
+  if (isUrlChangedFlg) {
+    isOpenChatReplaysFlg = false;  // フラグにfalseを設定
+    console.log("★  isUrlChangedFlg確認  open_chat_replays にfalseを設定")
+  }
+  // 一度実行済みかどうかの判定
+  if (isOpenChatReplaysFlg === false) {
+    // すでに実行完了済みか
     if (isOpenChatReplaysFlg === false) {
-      for (loop = 0; loop <= loopLimit; loop++) {
-
-        // チャットのリプレイを表示欄を自動展開
-        if (chat_replays_click()) {
-          isOpenChatReplaysFlg = true;  // フラグをtrueに設定
-          break;
-        } else if (loop >= loopLimit) {
-          // チャットのリプレイを表示欄が無い動画ページとして判断
-          isOpenChatReplaysFlg = true;
-        }
+      // チャットのリプレイを表示欄を自動展開
+      if (chat_replays_click()) {
+        isOpenChatReplaysFlg = true;  // フラグをtrueに設定
       }
-      // console.log("★  open_chat_replays実行●");
-    } else {
-      // console.log("★  open_chat_replays実行済み×");
     }
-  }, delay);  // 遅延時間後に処理を実行
+  } else {
+    console.log("★  open_chat_replays実行済み×");
+  }
+}
 
-  // チャットのリプレイを表示欄を自動展開
-  function chat_replays_click() {
+// チャットのリプレイを表示欄を自動展開
+function chat_replays_click() {
 
-    let result = false; // 結果を格納
-    let chatReplays = document.querySelector('#show-hide-button'); // チャットのリプレイを表示ボタンを取得
+  let result = false; // 結果を格納
+  let chatReplays = document.querySelector(".style-scope ytd-live-chat-frame"); // チャットのリプレイ欄を取得
+  let chatLabel = chatReplays?.querySelector('[aria-label="チャットのリプレイを表示"]'); // aria-label を持つ要素を検索
 
-    // チャットのリプレイを表示ボタンを取得出来ているか
-    if (chatReplays) {
-      let chatReplays_button = chatReplays.querySelector('.yt-spec-button-shape-next.yt-spec-button-shape-next--outline.yt-spec-button-shape-next--mono.yt-spec-button-shape-next--size-m.yt-spec-button-shape-next--enable-backdrop-filter-experiment');
-      if (chatReplays_button) {
-        // チャットのリプレイを表示ボタンの展開状態を確認
-        if (!chatReplays.hasAttribute('hidden')) {
-          // チャットのリプレイを表示ボタンを展開
-          chatReplays_button.click();
-          result = true;
-          // console.log('chat_replays_click 展開状態です。');
-        } else {
-          // console.log('chat_replays_click 未展開状態です。');
-        }
+  // チャットのリプレイ欄を取得出来ているか
+  if (chatReplays) {
+    let chatReplays_button = chatReplays.querySelector('.yt-spec-button-shape-next__button-text-content');
+    if (chatReplays_button) {
+      // チャットのリプレイを表示ボタンの展開状態を確認
+      if (!chatReplays.hasAttribute('hidden')) {
+        // チャットのリプレイを表示ボタンを展開
+        chatReplays_button.click();
+        result = true;
+        console.log('chat_replays_click 展開状態です。');
+      } else {
+        console.log('chat_replays_click 未展開状態です。');
       }
-    } else {
-      console.log('chat_replays_click 動作しませんでした。');
     }
-    return result;
-  };
+  } else {
+    // console.log('chat_replays_click 動作しませんでした。');
+    // チャットのリプレイを表示欄が無い動画ページとして判断
+    isOpenChatReplaysFlg = true;
+    console.log("★  チャットのリプレイを表示欄が無い動画ページとして判断●");
+
+  }
+  return result;
 };
 
 /*****
@@ -421,8 +419,8 @@ document.addEventListener("mouseover", (event) => {
  *****/
 
 const functionVideoArray = [
-  open_summary,                  // 概要欄を自動で展開
-  open_chat_replays,             // チャットのリプレイを表示欄を自動展開
+  // open_summary,                  // 概要欄を自動で展開
+  // open_chat_replays,             // チャットのリプレイを表示欄を自動展開
   menu_newline,                  // グッドボタン等のメニューを1段下へ変更
   hidden_Thanks,                 // Thanksボタン非表示
   hidden_clip,                   // クリップボタン非表示
@@ -445,9 +443,7 @@ const functionArray = [
 /*****
  * YouTubeの動画ページであるかどうかを判定する関数
  *****/
-const isYouTubeVideoPage = () => {
-  // 現在のURLを取得
-  const currentUrl = window.location.href;
+const isYouTubeVideoPage = (currentUrl) => {
   // URLがYouTubeの動画ページのパターンに一致するかどうかを返却
   return YOUTUBE_VIDEO_PATTERN.test(currentUrl);
 };
@@ -455,9 +451,7 @@ const isYouTubeVideoPage = () => {
 /*****
  * YouTubeのライブページであるかどうかを判定する関数
  *****/
-const isYouTubeLivePage = () => {
-  // 現在のURLを取得
-  const currentUrl = window.location.href;
+const isYouTubeLivePage = (currentUrl) => {
   // URLがYouTubeの動画ページのパターンに一致するかどうかを返却
   return YOUTUBE_LIVE_PATTERN.test(currentUrl);
 };
@@ -473,8 +467,10 @@ const executeFunctions = () => {
   console.log("isOpenSummaryFlg : " + isOpenSummaryFlg);
   console.log("isOpenChatReplaysFlg : " + isOpenChatReplaysFlg);
 
+  // 現在のURLを取得
+  const currentUrl = window.location.href;
   // YouTubeの動画ページまたはライブページの場合
-  if (isYouTubeVideoPage() || isYouTubeLivePage()) {
+  if (isYouTubeVideoPage(currentUrl) || isYouTubeLivePage(currentUrl)) {
     functionVideoArray.forEach(func => func());
 
     // YouTubeの動画ページ以外の場合
@@ -490,7 +486,6 @@ const initializePage = () => {
   console.log("initializePage が実行されました");
   isOpenSummaryFlg = false;
   isOpenChatReplaysFlg = false;
-  isVideoPageUrlChangedCheck();
   executeFunctions();  // 関数を実行
 };
 
@@ -502,30 +497,35 @@ const setupEventListeners = () => {
   window.onload = () => {
     console.log("window.onload が実行されました");
     initializePage();
+    chat_replays_click();
 
     // URLが履歴の変更で変わった場合（戻る・進むボタン）
     window.addEventListener('popstate', () => {
       console.log("popstate イベントが発生しました");
       initializePage();
+      chat_replays_click();
     });
 
     // URLのハッシュ部分が変更された場合
     window.addEventListener('hashchange', () => {
       console.log("hashchange イベントが発生しました");
       initializePage();
+      chat_replays_click();
     });
 
     // タブがアクティブになった時に動作
     window.addEventListener('focus', () => {
       console.log("focus イベントが発生しました");
       // フォーカス時に実行したい処理をここに書く
-      initializePage();
+      open_summary();
+      // chat_replays_click();
     });
   };
 
   // ページ遷移時（ページを離れる際に何か処理を行いたい場合）
   window.addEventListener('beforeunload', (event) => {
     console.log("beforeunload イベントが発生しました");
+    // initializePage();
   });
 };
 
@@ -543,7 +543,9 @@ const setupMutationObserver = () => {
   };
 
   const callback = (mutations) => {
-    if (isYouTubeVideoPage() || isYouTubeLivePage()) {
+    // 現在のURLを取得
+    const currentUrl = window.location.href;
+    if (isYouTubeVideoPage(currentUrl) || isYouTubeLivePage(currentUrl)) {
       // console.log("MutationObserver: 動的変更を検出しました");
       functionVideoArray.forEach(func => func());
     }
